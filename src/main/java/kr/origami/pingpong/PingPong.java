@@ -73,23 +73,6 @@ public class PingPong {
                     graphics.drawString(Math.max(0, A_SCORE.get()) + " | " + Math.max(0, B_SCORE.get()), WIDTH / 2 - 20, 50);
                     graphics.drawString("x" + Math.max(1, ACTUAL_SPEED.get()), WIDTH / 2 - 10, 25);
 
-                    SPEED.incrementAndGet();
-
-                    if(SPEED.get() % 500 == 0) {
-                        int speed = Math.max(ACTUAL_SPEED.incrementAndGet(), 1);
-                        if(BALL.vecX < 0) {
-                            BALL.vecX -= speed;
-                        } else {
-                            BALL.vecX += speed;
-                        }
-
-                        if(BALL.vecY < 0) {
-                            BALL.vecY -= speed;
-                        } else {
-                            BALL.vecY += speed;
-                        }
-                    }
-
                     if(MOVING.get()) {
                         if(!START.get()) {
                             START.set(true);
@@ -108,6 +91,22 @@ public class PingPong {
                     }
 
                     if(START.get()) {
+                        SPEED.incrementAndGet();
+
+                        if(SPEED.get() % 500 == 0) {
+                            int speed = Math.max(ACTUAL_SPEED.incrementAndGet(), 1);
+                            if(BALL.vecX < 0) {
+                                BALL.vecX -= speed;
+                            } else {
+                                BALL.vecX += speed;
+                            }
+
+                            if(BALL.vecY < 0) {
+                                BALL.vecY -= speed;
+                            } else {
+                                BALL.vecY += speed;
+                            }
+                        }
                         double nextX = BALL.x + BALL.vecX;
                         double nextY = BALL.y + BALL.vecY;
                         if(nextY <= 0 || nextY >= actualHeight()) {

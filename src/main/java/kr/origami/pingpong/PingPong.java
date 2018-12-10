@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PingPong {
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 500;
+    public static int WIDTH = 1000;
+    public static int HEIGHT = 500;
     public static final int RADIUS = 10;
 
     private static final Random RANDOM = new Random();
@@ -30,6 +30,7 @@ public class PingPong {
     private static final AtomicInteger B_SCORE = new AtomicInteger(-1);
 
     private static final AtomicInteger SPEED = new AtomicInteger();
+    private static final AtomicInteger ACTUAL_SPEED = new AtomicInteger();
 
     private static final Ball BALL = new Ball();
 
@@ -59,19 +60,23 @@ public class PingPong {
                 .antialiasing(true)
                 .background(Color.BLACK)
                 .size(WIDTH, HEIGHT)
-                .resizable(false)
                 .closeOperation(WindowConstants.EXIT_ON_CLOSE)
                 .centerAlign()
                 .repaintInterval(10L)
                 .painter((juikit, graphics) -> {
+                    WIDTH = juikit.width();
+                    HEIGHT = juikit.height();
+                    BARS.get(0).setX(100);
+                    BARS.get(1).setX(WIDTH - 100);
+
                     graphics.setColor(Color.WHITE);
                     graphics.drawString(Math.max(0, A_SCORE.get()) + " | " + Math.max(0, B_SCORE.get()), WIDTH / 2 - 20, 50);
+                    graphics.drawString("x" + Math.max(1, ACTUAL_SPEED.get()), WIDTH / 2 - 10, 25);
 
                     SPEED.incrementAndGet();
 
-                    if(SPEED.get() % 100 == 0) {
-                        /*
-                        double speed = Math.max(SPEED.get() / 100d, 1d);
+                    if(SPEED.get() % 500 == 0) {
+                        int speed = Math.max(ACTUAL_SPEED.incrementAndGet(), 1);
                         if(BALL.vecX < 0) {
                             BALL.vecX -= speed;
                         } else {
@@ -83,7 +88,6 @@ public class PingPong {
                         } else {
                             BALL.vecY += speed;
                         }
-                        */
                     }
 
                     if(MOVING.get()) {
@@ -135,15 +139,16 @@ public class PingPong {
 
                         if(finished) {
                             SPEED.set(0);
+                            ACTUAL_SPEED.set(0);
                             initBall();
                             START.set(false);
                         }
 
                         Bar computer = BARS.get(1);
                         if((computer.getY() + computer.getHeight() / 2) > BALL.y) {
-                            computer.setY(computer.getY() - 6);
+                            computer.setY(computer.getY() - Math.min(8 + ACTUAL_SPEED.get(), 12));
                         } else {
-                            computer.setY(computer.getY() + 6);
+                            computer.setY(computer.getY() + Math.min(8 + ACTUAL_SPEED.get(), 12));
                         }
                     }
 

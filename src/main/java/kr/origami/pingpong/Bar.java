@@ -2,7 +2,7 @@ package kr.origami.pingpong;
 
 public class Bar {
 
-    private final int x;
+    private int x;
     private int y;
 
     private final int width;
@@ -18,6 +18,10 @@ public class Bar {
 
     public int getX() {
         return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 
     public int getY() {
